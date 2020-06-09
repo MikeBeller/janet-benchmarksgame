@@ -1,5 +1,3 @@
-(import ../util/util :as util)
-
 (defn factorial [n]
   (assert (< n 19))  # overflow
   (assert (>= n 0))

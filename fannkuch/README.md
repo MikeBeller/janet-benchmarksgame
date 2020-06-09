@@ -2,6 +2,8 @@
 
 ## Naive, single-threaded version
 
+fannkuch1.janet:
+
 Using a generator for the permutations (for readability).
 Runtime: 12.5 seconds.
 
