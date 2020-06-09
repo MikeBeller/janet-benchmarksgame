@@ -92,10 +92,25 @@
       (fannkuch-task n (* tasksize ti) tasksize)))
   [(sum (map |(in $ 0) res)) (max ;(map |($ 1) res))])
 
+(defn fannkuch-mt [n ntasks]
+  (def factn (factorial n))
+  (def tasksize (math/floor (/ (+ factn ntasks -1) ntasks)))
+  (assert (= 0 (% tasksize 2)) "must be even for checksums to sum correctly")
+  (for ti 0 ntasks
+    (thread/new (fn [parent] 
+                  (def res (fannkuch-task n (* tasksize ti) tasksize))
+                  (thread/send parent res))))
+  (def res
+    (seq [ti :range [0 ntasks]]
+      (thread/receive math/inf)))
+  [(sum (map |(in $ 0) res)) (max ;(map |($ 1) res))])
+
 (assert (= [228 16] (fannkuch 7 1)))
 (assert (= [228 16] (fannkuch 7 4)))
+(assert (= [228 16] (fannkuch-mt 7 4)))
+
 (def arg (scan-number ((dyn :args) 1)))
-(def [checksum mf] (fannkuch arg 4))
+(def [checksum mf] (fannkuch-mt arg 4))
 (print checksum)
 (printf "Pfannkuchen(%d) = %d" arg mf)
 
