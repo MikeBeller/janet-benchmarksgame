@@ -9,6 +9,17 @@ For n = 10
 
 Compare to fannkuch.py: 4.8s, fannkuch.lua: 2.8s
 
+Note that most of the time is spent on flipping, so do some testing
+to figure out how to speed it up.  See fliptest.janet
+
+Figured out that (in a n) is way faster than (a n), and you
+can see it by doing (disasm (fn [a] (in a 2))) vs the same
+for (a 2) -- the former is a single op and the latter calls
+"a" with arg 2.
+
+Also determined that if you can unroll the loops you can double
+the speed.
+
 ## Multithreaded version
 
 * fannkuch3.janet: **2.4s** real or **9.4s** user on a 4-core system

@@ -16,9 +16,9 @@
 
 (defn rs7 [xs]
   (var tmp 0)
-  (set tmp (xs 0)) (put xs 0 (xs 6)) (put xs 6 tmp)
-  (set tmp (xs 1)) (put xs 1 (xs 5)) (put xs 5 tmp)
-  (set tmp (xs 2)) (put xs 2 (xs 4)) (put xs 4 tmp))
+  (set tmp (in xs 0)) (put xs 0 (in xs 6)) (put xs 6 tmp)
+  (set tmp (in xs 1)) (put xs 1 (in xs 5)) (put xs 5 tmp)
+  (set tmp (in xs 2)) (put xs 2 (in xs 4)) (put xs 4 tmp))
 
 (let [a @[1 2 3 4 5 6 7 8]] (rs7 a) (assert (deep= a @[7 6 5 4 3 2 1 8])))
 
@@ -56,8 +56,8 @@
   (var tmp 0)
   (def end (math/floor (/ b 2)))
   (while (<= i end)
-    (set tmp (xs i))
-    (put xs i (xs j))
+    (set tmp (in xs i))
+    (put xs i (in xs j))
     (put xs j tmp)
     (++ i)
     (-- j)))
@@ -74,3 +74,20 @@
 
 (util/bench test4 "slice2")
 
+(defn reverse-slice3
+  "Reverse array xs from a thru b"
+  [xs a b]
+  (loop [i :range [0 (/ (- b a) 2)]
+         :let [ai (+ a i)
+               bi (- b i)
+               tmp (in xs ai)]]
+         (put xs ai (in xs bi))
+         (put xs bi tmp)))
+
+(defn test5 []
+  (def n n)
+  (def a (array/slice a))
+  (loop [i :range [0 n]]
+    (reverse-slice3 a 0 7)))
+
+(util/bench test5 "slice3")
