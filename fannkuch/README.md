@@ -17,8 +17,13 @@ can see it by doing (disasm (fn [a] (in a 2))) vs the same
 for (a 2) -- the former is a single op and the latter calls
 "a" with arg 2.
 
+* fannkuch2-in.janet **7.98s**
+
 Also determined that if you can unroll the loops you can double
-the speed.
+the speed of the flipping, so tried unrolling the loops and putting
+the result in a function table:
+
+* fannkuch4.janet **6.4s**
 
 ## Multithreaded version
 

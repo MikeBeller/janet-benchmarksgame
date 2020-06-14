@@ -1,4 +1,5 @@
 # Version with reverse-slice replaced with function table
+# cuts time by 20% over the fannkuch2-in.janet version
 
 (defn factorial [n]
   (assert (< n 19))  # overflow for Janet
@@ -15,27 +16,25 @@
     (put a k (in a (inc k))))
   (put a j ai))
 
-(defn reverse-slice
-  "Reverse array xs from a thru b"
-  [xs a b]
-  (loop [i :range [0 (/ (- b a) 2)]
-         :let [ai (+ a i)
-               bi (- b i)
-               tmp (in xs ai)]]
-         (put xs ai (in xs bi))
-         (put xs bi tmp)))
+(defn gen-rev-help [n]
+  (def r @[])
+  (for i 0 (/ n 2)
+    (array/push r (tuple 'set 't (tuple 'in 'a i)))
+    (array/push r (tuple 'put 'a i (tuple 'in 'a (- n i))))
+    (array/push r (tuple 'put 'a (- n i) 't)))
+  r)
 
-(let [a @[1 2]] (reverse-slice a 0 1) (assert (deep= a @[2 1])))
-(let [a @[1 2 3]] (reverse-slice a 0 2) (assert (deep= a @[3 2 1])))
-(let [a @[1 2 3 4 5]] (reverse-slice a 0 3) (assert (deep= a @[4 3 2 1 5])))
+(defmacro gen-rev [n]
+       ~(fn [a]
+          (var t 0)
+          ,;(gen-rev-help n)))
 
-(macro gen-rev [i]
-       (fn [a] ,i))
+(def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
 
-(def rev-tab (seq [i :range [0 20]] (gen-rev i)))
+(let [a @[1 2]] ((in rev-tab 1) a) (assert (deep= a @[2 1])))
+(let [a @[1 2 3]] ((in rev-tab 2) a) (assert (deep= a @[3 2 1])))
+(let [a @[1 2 3 4 5]] ((in rev-tab 3) a) (assert (deep= a @[4 3 2 1 5])))
 
-(defn rev0 [a] )
-(defn rev1 [a] (var tmp
 (defn fannkuch [n]
   (var checksum 0)
   (var sign 1)
@@ -52,8 +51,8 @@
     #(def p (array/slice perm))
     (array/remove p 0 n)
     (array/insert p 0 ;perm)
-    (while (not= (p 0) 0)
-      (reverse-slice p 0 (in p 0))
+    (while (not= (in p 0) 0)
+      ((rev-tab (in p 0)) p)
       (++ nflips))
     (+= checksum (* sign nflips))
     (set sign (- sign))
