@@ -1,3 +1,4 @@
+# Try using buffers instead of arrays -- doesn't help
 
 (defn factorial [n]
   (assert (< n 19))  # overflow for Janet
