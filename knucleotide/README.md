@@ -9,4 +9,9 @@ i.e. 1GB (!).
 
 Janet: 226 seconds
 Python3: 160 seconds
+Lua: 80s
+
+Janet -- without gcsetinterval:
+> 334 minutes!!
+
 
