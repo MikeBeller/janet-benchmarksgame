@@ -1,12 +1,10 @@
 
 (defn read-seq [fname]
   (with [infile (file/open fname)]
-    (loop [line :iterate (file/read infile :line)
-           :until (string/has-prefix? ">THREE " line)])
     (string/ascii-lower
       (string/join
         (seq [line :iterate (file/read infile :line)
-              :until (= (line 0) (chr ">"))]
+              :when (not= (line 0) (chr ">"))]
           (string/trimr line))))))
 
 (gcsetinterval 1000000000)
@@ -55,10 +53,8 @@
 (defn regexredux []
   (def fpath (get (dyn :args) 1))
   (def data (read-seq fpath))
-  (print data)
   (loop [i :range [0 (length patterns)]]
     (def r (peg/match (in pegs i) data))
-    #(pp r)
     (printf "%s %d" (in patterns i) (length r))))
 
 (regexredux)
