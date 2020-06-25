@@ -20,6 +20,6 @@ Lua: 80s
 ## Janet -- without gcsetinterval:
 
 **greater than 1280 minutes** (never finished)
-And oddly memory usage was over **6G**.  What's going on?
+Points to some need to auto-adjust gc interval??
 
 
