@@ -13,4 +13,7 @@ that I put in the directories are not necessarily the fastest ones on
 the benchmarksgame site, but rather ones that I think are useful
 in some sense as "comparables".  
 
+I've done all my timings on a `Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz`, 4
+cores, with hyperthreading disabled.  However as mentioned above, often my
+implementations of the benchmarks are focused on single-thread performance.
 
