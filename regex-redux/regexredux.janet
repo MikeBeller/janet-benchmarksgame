@@ -1,4 +1,3 @@
-
 (gcsetinterval 1000000000)
 
 # patterns from the benchmark -- we will convert to pegs
@@ -17,23 +16,35 @@
             [ "tHa[Nt]" "<4>" ]
             [ "aND|caN|Ha[DS]|WaS" "<3>" ]
             [ "a[NSt]|BY" "<2>" ]
-            #[ "<[^>]*>" "|" ]  -- too lazy to expand re converter
-            #[ "\\|[^|][^|]*\\|" "-" ]
-            [ '(* "<" (thru ">")) "|"]
-            [ '(* "|" (if-not "|" 1) (thru "|")) "-"]
+            [ "<[^>]*>" "|" ]
+            [ "|[^|][^|]*|" "-" ]
             ])
 
-(defn real-re-to-peg [re-str]
+(defn re-to-peg
+  ``A very limited converter from a regex re-str to a corresponding PEG.
+    Just enough to handle the cases required by this benchmark.``
+  [re-str]
   (def m
     (peg/match
       ~{:p (drop (cmt ($) ,(fn [n] (print "AT: " n) n)))
         #:l (set "acgt")
         :l :a
         :letters (<- (some :l))
+        :sym (set "<>|")
         :wild (* "[" (cmt :letters ,(fn [ls] (tuple 'set ls))) "]")
-        :sub (+ :letters :wild)
-        :word (cmt (some :sub) ,(fn [& ss] (tuple '* ;ss)))
-        :words (cmt (* :word "|" :word) ,(fn [& wds] (tuple '+ ;wds)))
+        :squish (cmt (* (<- :sym) "[^" 
+                        (? (* (<- :sym) "]" "[^"))
+                        (<- :sym :1) "]*" (backmatch :1) )
+                     ,(fn [& ss]
+                        (match ss
+                          @[a b c] (tuple '* a (tuple 'if-not b 1) (tuple 'thru c))
+                          @[a b] (tuple '* a (tuple 'thru b)))))
+        :sub (+ :letters :wild :squish)
+        :word (cmt (some :sub) ,(fn [& ss] (if (= 1 (length ss)) (in ss 0) (tuple '* ;ss))))
+        :words (cmt (* :word (any (* "|" :word)))
+                    ,(fn [& wds]
+                       (if (= 1 (length wds)) (in wds 0)
+                         (tuple '+ ;wds))))
         :main (+ :words :word)
         }
       re-str))
@@ -41,9 +52,8 @@
     @[pg] pg
     (errorf "unsupported regex pattern: %s" re-str)))
 
-(defn re-to-peg [re-str-or-tuple]
-  (if (tuple? re-str-or-tuple) re-str-or-tuple
-    (real-re-to-peg re-str-or-tuple)))
+#(pp (re-to-peg "<[^>]*>"))
+#(pp (re-to-peg  "|[^|][^|]*|"))
 
 (defn finder
   "Creates a peg that finds all locations of pg (a PEG) in the text."
@@ -76,13 +86,13 @@
             :when (not (string/has-prefix? ">" s))]
         (string/trimr s))))
 
-  # Counting
+  # Counting matches for each of 'match-regexes'
   (loop [regex :in match-regexes]
     (def pg (finder (re-to-peg regex)))
     (def r (peg/match pg data))
     (printf "%s %d" regex (length r)))
 
-  # Replacing
+  # Replacing using each of a set of re,sub pairs in 'subst-regex-pairs'
   (var d data)
   (loop [[regex sub] :in subst-regex-pairs]
     (def pg (substituter (re-to-peg regex) sub))
@@ -95,3 +105,4 @@
   (printf "\n%d\n%d\n%d" (length file-contents) (length data) (length d)))
 
 (regexredux)
+
