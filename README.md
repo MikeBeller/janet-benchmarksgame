@@ -17,3 +17,19 @@ I've done all my timings on a `Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz`, 4
 cores, with hyperthreading disabled.  However as mentioned above, often my
 implementations of the benchmarks are focused on single-thread performance.
 
+## Ideas for Janet
+
+Based on the benchmarks I've implemented so far, here are some ideas for
+Janet that would improve the performance on these benchmarks.
+
+* Improvements to the Garbage Collector.  In particular with default
+  gcsetinterval (normally 64k in the source) some benchmarks which
+  accumulate large tables essentially never complete. (Thousands of
+  times slower than with gcsetinterval set large.)  Perhaps have
+  gc interval auto adjust?  (See knucleotide benchmark)
+* An equivalent of buffer/blit for arrays (e.g. array/blit) would help
+  as a lot of benchmarks involve moving things between arrays, and if
+  you use Janet's indexed combinators, they are always allocating new
+  arrays. (See fannkuch)  array/reverse-in would also be great.
+* Some way to profile Janet code to see where it spends its time.
+
