@@ -1,4 +1,5 @@
 # Take fannkuch2 and add threads
+#  Takes an extra argument of number of threads to run
 
 (defn factorial [n]
   (assert (< n 19))  # overflow for Janet
@@ -111,7 +112,9 @@
 (assert (= [228 16] (fannkuch-mt 7 4)))
 
 (def arg (scan-number ((dyn :args) 1)))
-(def NCORES 4)
+(def NCORES (if (> (length (dyn :args)) 2)
+              (scan-number ((dyn :args) 2))
+              4))
 (def [checksum mf] (fannkuch-mt arg NCORES))
 (print checksum)
 (printf "Pfannkuchen(%d) = %d" arg mf)
