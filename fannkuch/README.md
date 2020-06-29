@@ -32,12 +32,22 @@ the result in a function table:
 
 * fannkuch4.janet **5.2s**
 
+## And add in an implementation of rotate-slice by @bakpakin
+
+* fannkuch4-bakpakin.janet **4.9s**
+
 ## Now take it "up to 11" by creating a C function for flipping
 
 Now to really speed it up we can add a C function.  Created the
 arraymod module for in-place array modification, and new benchmark:
 
 * fannkuch5.janet **3.0s**
+
+Note this version may be "cheating" per the CLBG rules because I
+wrote a C function specifically for this benchmark.  And in a sense
+therefore it's not testing Janet performance.  I left this benchmark
+in to give an indication of how much an addition to the Janet API
+could improve things.
 
 ## Aside -- Multithreaded version
 
