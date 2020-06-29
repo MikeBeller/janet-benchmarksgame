@@ -13,7 +13,7 @@ i.e. 1GB (!):
 
 ## Janet -- with gcsetinterval 1000000000
 
-Janet: 226 seconds
+Janet: **168 seconds** (226 seconds non LTO -- LTO gave 25% improvement)
 Python3: 160 seconds
 Lua: 80s
 

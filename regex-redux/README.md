@@ -12,7 +12,7 @@ general regex to PEG converter.
 
 ## Results for input5000000
 
-regexredux.janet **31.5s**
+regexredux.janet **29.1s**
 regexredux1.py   **11.3s**
 
 So in our implementation Janet PEGS are around 1/3 speed of Python REs.
@@ -24,3 +24,7 @@ python REs, so PEGs are far from the speed of that library.
 Of course we could wrap PCRE in Janet but that's not the point of my tests.
 I'm trying to test Janet's speed on the benchmarks.
 
+Note -- Janet compiled without LTO ran in 31.5s so LTO only improves by
+around 8% for this benchmark -- whereas for others it was more like
+25-30%.  This is probably because timing is just dominated by the running
+time of the peg/match, which doesn't cross link-time boundaries (?)
