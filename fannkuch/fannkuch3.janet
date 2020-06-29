@@ -9,30 +9,26 @@
 
 (defn rotate-slice
   "Rotate left elements of array a from index i through
-  (and including) index j.  Assumes i,j are valid indexes."
+   (and including) index j.  Assumes i,j are valid indexes."
   [a i j]
-  (def ai (in a i))
-  (array/remove a i)
-  (array/insert a j ai))
+  (def ai (a i))
+  (for k i j
+    (put a k (a (inc k))))
+  (put a j ai))
 
-(defn gen-rev-help [n]
-  (def r @[])
-  (for i 0 (/ n 2)
-    (array/push r (tuple 'set 't (tuple 'in 'a i)))
-    (array/push r (tuple 'put 'a i (tuple 'in 'a (- n i))))
-    (array/push r (tuple 'put 'a (- n i) 't)))
-  r)
+(defn reverse-slice
+  "Reverse array xs from a thru b"
+  [xs a b]
+  (loop [i :range [0 (/ (- b a) 2)]
+         :let [ai (+ a i)
+               bi (- b i)
+               tmp (in xs ai)]]
+         (put xs ai (xs bi))
+         (put xs bi tmp)))
 
-(defmacro gen-rev [n]
-       ~(fn [a]
-          (var t 0)
-          ,;(gen-rev-help n)))
-
-(def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
-
-(let [a @[1 2]] ((in rev-tab 1) a) (assert (deep= a @[2 1])))
-(let [a @[1 2 3]] ((in rev-tab 2) a) (assert (deep= a @[3 2 1])))
-(let [a @[1 2 3 4 5]] ((in rev-tab 3) a) (assert (deep= a @[4 3 2 1 5])))
+(let [a @[1 2]] (reverse-slice a 0 1) (assert (deep= a @[2 1])))
+(let [a @[1 2 3]] (reverse-slice a 0 2) (assert (deep= a @[3 2 1])))
+(let [a @[1 2 3 4 5]] (reverse-slice a 0 3) (assert (deep= a @[4 3 2 1 5])))
 
 (defn array-blit [dst src dstart sstart send]
   (for i 0 (- send sstart)
@@ -60,7 +56,6 @@
                  (perm1 (+ d j))
                  (perm1 (+ d j (- i) -1))))))
 
-  (print "POST PERM") (pp perm1)
   (var idx idxstart)
   (def p (array/new-filled n 0))
   (while true
@@ -70,7 +65,7 @@
     (array/remove p 0 n)
     (array/insert p 0 ;perm)
     (while (not= (p 0) 0)
-      ((rev-tab (in p 0)) p)
+      (reverse-slice p 0 (p 0))
       (++ nflips))
     (+= checksum (* sign nflips))
     (set sign (- sign))
@@ -103,24 +98,20 @@
   (def factn (factorial n))
   (def tasksize (math/floor (/ (+ factn ntasks -1) ntasks)))
   (assert (= 0 (% tasksize 2)) "must be even for checksums to sum correctly")
-  (print "GOT HERE " ntasks " " tasksize)
   (for ti 0 ntasks
     (thread/new (fn [parent] 
                   (def res (fannkuch-task n (* tasksize ti) tasksize))
                   (thread/send parent res))))
-  (print "GOT THERE")
   (def res
     (seq [ti :range [0 ntasks]]
       (thread/receive math/inf)))
-  (print "GOT WHERE")
   [(sum (map |(in $ 0) res)) (max ;(map |($ 1) res))])
 
 (assert (= [228 16] (fannkuch 7 1)))
 (assert (= [228 16] (fannkuch 7 4)))
-#(assert (= [228 16] (fannkuch-mt 7 2)))
-#(os/exit 1)
-#(assert (= [228 16] (fannkuch-mt 7 4)))
-
+(os/exit 1)
+(assert (= [228 16] (fannkuch-mt 7 4)))
+(os/exit 1)
 (def arg (scan-number ((dyn :args) 1)))
 (def NCORES (if (> (length (dyn :args)) 2)
               (scan-number ((dyn :args) 2))
