@@ -13,9 +13,27 @@ i.e. 1GB (!):
 
 ## Janet -- with gcsetinterval 1000000000
 
+```
+$ time janet knucleotide.janet input25000000.txt
+```
+
 Janet: **168 seconds** (226 seconds non LTO -- LTO gave 25% improvement)
 Python3: 160 seconds
 Lua: 80s
+
+### Use Keywords (Or Symbols) instead of Strings
+
+As suggested by @bakpakin -- use keyword/slice or symbol/slice
+instead of string/slice.  This will intern the strings.
+
+```
+$ time janet knucleotide.janet input25000000.txt
+```
+
+Janet: **143 seconds**
+
+This is a 15% improvement over using strings, and actually faster
+than the Python implementation.
 
 ## Janet -- without gcsetinterval:
 
