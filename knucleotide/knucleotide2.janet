@@ -9,7 +9,7 @@
               :until (= (line 0) (chr ">"))]
           (string/trimr line))))))
 
-(gcsetinterval 1000000000)
+#(gcsetinterval 1000000000)
 (def fpath (get (dyn :args) 1))
 (def data (read-seq fpath))
 (def knseqs ["GGT" "GGTA" "GGTATT" "GGTATTTTAATT" "GGTATTTTAATTTATAGT"])

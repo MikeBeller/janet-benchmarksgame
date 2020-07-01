@@ -6,10 +6,11 @@ To generate the input data, run
 
 python fasta2.py 25000000 >input25000000.txt
 
-NOTE: For Janet you must `(gcsetinterval 100000000)` at least,
+NOTE: For Janet 1.9 you must `(gcsetinterval 100000000)` at least,
 or something larger in order to get even semi-decent performance.  These
 results (for the 25,000,000 file) were with (gcsetinterval 1000000000)
-i.e. 1GB (!):
+i.e. 1GB (!).  **NOT ANYMORE** since June 29, commit 7fb8c4a, Janet has
+auto-gcsetinterval.  
 
 ## Janet -- with gcsetinterval 1000000000
 
@@ -37,7 +38,9 @@ than the Python implementation.
 
 ## Janet -- without gcsetinterval:
 
+Originally, when I ran without gcsetinterval
 **greater than 1280 minutes** (never finished)
 Points to some need to auto-adjust gc interval??
+As of 6/28/20 this is now in the master branch.
 
 
