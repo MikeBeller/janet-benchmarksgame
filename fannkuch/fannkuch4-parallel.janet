@@ -39,10 +39,10 @@
     (put dst (+ dstart i) (src (+ sstart i))))
   dst)
 
-(defn fannkuch-task [n idxstart size]
+(defn fannkuch-task [n idxstart size rev-tab]
   (printf "ENTERING TASK: %d %d %d" n idxstart size)
   # TRY CREATING THE TABLE LOCALLY BUT EVAL DOESN'T WORK
-  (def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
+  #(def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
   (def idxmax (+ idxstart size))
   (var checksum 0)
   (var sign 1)
@@ -100,8 +100,9 @@
   (print "GOT HERE " ntasks " " tasksize)
   (for ti 0 ntasks
     (thread/new (fn [parent] 
-                  (def res (fannkuch-task n (* tasksize ti) tasksize))
-                  (thread/send parent res))))
+                  (def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
+                  (def res (fannkuch-task n (* tasksize ti) tasksize rev-tab))
+                  (thread/send parent res)) ntasks :h))
   (print "GOT THERE")
   (def res
     (seq [ti :range [0 ntasks]]
