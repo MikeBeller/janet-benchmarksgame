@@ -10,7 +10,7 @@ $ python binarytrees2.python 21
 $ lua binarytrees2.lua 21
 ```
 
-binarytrees1.janet: **75s**
-binarytrees2.py: **109s**
-binarytrees2.lua: **218s**
+* binarytrees1.janet: **75s**
+* binarytrees2.py: **109s**
+* binarytrees2.lua: **218s**
 
