@@ -19,6 +19,7 @@ def permutations(n, start, size):
         for _ in range(count[v]):
             p[:v], p[v] = p[1:v + 1], p[0]
 
+    print("FIRST:", p)
     assert(count[1] == 0)
     assert(size < 2 or (size % 2 == 0))
 

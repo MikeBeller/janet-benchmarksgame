@@ -1,4 +1,4 @@
-# Take fannkuch2 and add threads
+# Take fannkuch4 and add threads
 #  Takes an extra argument of number of threads to run
 
 (defn factorial [n]
@@ -40,6 +40,9 @@
   dst)
 
 (defn fannkuch-task [n idxstart size]
+  (printf "ENTERING TASK: %d %d %d" n idxstart size)
+  # TRY CREATING THE TABLE LOCALLY BUT EVAL DOESN'T WORK
+  (def rev-tab (seq [i :range [0 18]] (eval ~(gen-rev ,i))))
   (def idxmax (+ idxstart size))
   (var checksum 0)
   (var sign 1)
@@ -90,15 +93,6 @@
 
   [checksum maxflips])
 
-(defn fannkuch [n ntasks]
-  (def factn (factorial n))
-  (def tasksize (math/floor (/ (+ factn ntasks -1) ntasks)))
-  (assert (= 0 (% tasksize 2)) "must be even for checksums to sum correctly")
-  (def res
-    (seq [ti :range [0 ntasks]]
-      (fannkuch-task n (* tasksize ti) tasksize)))
-  [(sum (map |(in $ 0) res)) (max ;(map |($ 1) res))])
-
 (defn fannkuch-mt [n ntasks]
   (def factn (factorial n))
   (def tasksize (math/floor (/ (+ factn ntasks -1) ntasks)))
@@ -112,20 +106,18 @@
   (def res
     (seq [ti :range [0 ntasks]]
       (thread/receive math/inf)))
-  (print "GOT WHERE")
   [(sum (map |(in $ 0) res)) (max ;(map |($ 1) res))])
 
-(assert (= [228 16] (fannkuch 7 1)))
-(assert (= [228 16] (fannkuch 7 4)))
-#(assert (= [228 16] (fannkuch-mt 7 2)))
-#(os/exit 1)
+(assert (= [228 16] (fannkuch-mt 7 2)))
+
+(os/exit 1)  # exit for now until the above call to fannkuch-mt works
 #(assert (= [228 16] (fannkuch-mt 7 4)))
 
-(def arg (scan-number ((dyn :args) 1)))
-(def NCORES (if (> (length (dyn :args)) 2)
-              (scan-number ((dyn :args) 2))
-              4))
-(def [checksum mf] (fannkuch-mt arg NCORES))
-(print checksum)
-(printf "Pfannkuchen(%d) = %d" arg mf)
+#(def arg (scan-number ((dyn :args) 1)))
+#(def NCORES (if (> (length (dyn :args)) 2)
+#              (scan-number ((dyn :args) 2))
+#              4))
+#(def [checksum mf] (fannkuch-mt arg NCORES))
+#(print checksum)
+#(printf "Pfannkuchen(%d) = %d" arg mf)
 
