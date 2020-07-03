@@ -43,6 +43,7 @@ than the Python implementation.
 Originally, when I ran without gcsetinterval
 **greater than 1280 minutes** (never finished)
 Points to some need to auto-adjust gc interval??
-As of 6/28/20 this is now in the master branch.
+As of [this commit](https://github.com/janet-lang/janet/commit/95c633914f0381c9800fedbcc0c47bf70d53f62a)
+on 6/27/20 auto-adjust of gc interval is now in the master branch.
 
 
