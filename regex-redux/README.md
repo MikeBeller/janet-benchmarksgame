@@ -28,3 +28,16 @@ Note -- Janet compiled without LTO ran in 31.5s so LTO only improves by
 around 8% for this benchmark -- whereas for others it was more like
 25-30%.  This is probably because timing is just dominated by the running
 time of the peg/match, which doesn't cross link-time boundaries (?)
+
+## Results with New peg/find-all and peg/replace-all functions
+
+On or about [this commit](https://github.com/janet-lang/janet/commit/e548e1f6e0e2c12a7d8f3cef3bc97292a1ae2418)
+Janet added peg/find-all and peg/replace-all functions.  Major improvement
+in Janet's performance on the benchmark:
+
+regexredux.janet **29.1s**
+regexredux2.janet **15.3s**
+regexredux1.py   **11.3s**
+
+So it doubled Janet's speed on the benchmark.
+
