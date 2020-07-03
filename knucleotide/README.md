@@ -12,15 +12,17 @@ results (for the 25,000,000 file) were with (gcsetinterval 1000000000)
 i.e. 1GB (!).  **NOT ANYMORE** since June 29, commit 7fb8c4a, Janet has
 auto-gcsetinterval.  
 
-## Janet -- with gcsetinterval 1000000000
+## Janet
 
 ```
 $ time janet knucleotide.janet input25000000.txt
 ```
 
 Janet: **168 seconds** (226 seconds non LTO -- LTO gave 25% improvement)
+
 Python3: 160 seconds
-Lua: 80s
+
+Lua: **80s**
 
 ### Use Keywords (Or Symbols) instead of Strings
 
