@@ -60,4 +60,9 @@ threads it should achieve < 1 second.  This version just shows how
 easy it is to multithread one of these benchmarks and that you get
 almost a pure 4/1 speedup on a 4-core machine.
 
+New version based on fannkuch4 (with rev table and all optimizations):
+
+fannkuch4-parallel.janet: **1.4s** real or **5.4s user**
+
+Equivalent to python.
 
