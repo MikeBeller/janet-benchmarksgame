@@ -1,7 +1,7 @@
 
 (def solar-mass (* 4 math/pi math/pi))
 (def days-per-year 365.24)
-(def bodies
+(def bodies-table
 [
   @{ # Sun
     :x 0
@@ -50,45 +50,64 @@
   }
 ])
 
+(def X 0)
+(def Y 1)
+(def Z 2)
+(def VX 3)
+(def VY 4)
+(def VZ 5)
+(def MASS 6)
+
+# Bind bodies to be a set of arrays
+(def bodies
+  (seq [b :in bodies-table]
+    (seq [k :in [:x :y :z :vx :vy :vz :mass]]
+      (in b k))))
+
 (defn advance [bodies nbody dt]
   (loop [i :range [0 nbody]
-         :let [bi (in bodies i)]]
+         :let [bi (in bodies i)
+               [bix biy biz bivx bivy bivz bimass] bi]]
+    (var bivx bivx)
+    (var bivy bivy)
+    (var bivz bivz)
     (loop [j :range [(inc i) nbody]
-           :let [bj (in bodies j)]]
-      (def dx (- (in bi :x) (in bj :x)))
-      (def dy (- (in bi :y) (in bj :y)))
-      (def dz (- (in bi :z) (in bj :z)))
+           :let [bj (in bodies j)
+               [bjx bjy bjz bjvx bjvy bjvz bjmass] bj]]
+      (def dx (- bix bjx))
+      (def dy (- biy bjy))
+      (def dz (- biz bjz))
       (def dist (math/sqrt (+ (* dx dx) (* dy dy) (* dz dz))))
       (def mag (/ dt (* dist dist dist)))
-      (def bim (* (in bi :mass) mag))
-      (def bjm (* (in bj :mass) mag))
-      (-= (bi :vx) (* dx bjm))
-      (-= (bi :vy) (* dy bjm))
-      (-= (bi :vz) (* dz bjm))
-      (+= (bj :vx) (* dx bim))
-      (+= (bj :vy) (* dy bim))
-      (+= (bj :vz) (* dz bim))))
+      (def bim (* bimass mag))
+      (def bjm (* bjmass mag))
+      (-= bivx (* dx bjm))
+      (-= bivy (* dy bjm))
+      (-= bivz (* dz bjm))
+      (+= (bj VX) (* dx bim))
+      (+= (bj VY) (* dy bim))
+      (+= (bj VZ) (* dz bim)))
+    (set (bi VX) bivx)
+    (set (bi VY) bivy)
+    (set (bi VZ) bivz))
   (each bi bodies
-    (+= (bi :x) (* dt (in bi :vx)))
-    (+= (bi :y) (* dt (in bi :vy)))
-    (+= (bi :z) (* dt (in bi :vz)))))
-
+    (+= (bi X) (* dt (in bi VX)))
+    (+= (bi Y) (* dt (in bi VY)))
+    (+= (bi Z) (* dt (in bi VZ)))))
 
 (defn energy [bodies nbody]
   (var e 0)
   (loop [i :range [0 nbody]
-         :let [bi (in bodies i)]]
-    (def vx (in bi :vx))
-    (def vy (in bi :vy))
-    (def vz (in bi :vz))
-    (+= e (* 0.5 (in bi :mass) (+ (* vx vx) (* vy vy) (* vz vz))))
+         :let [bi (in bodies i)
+               [bix biy biz bivx bivy bivz bimass] bi]]
+    (+= e (* 0.5 bimass (+ (* bivx bivx) (* bivy bivy) (* bivz bivz))))
     (loop [j :range [(inc i) nbody]
            :let [bj (in bodies j)]]
-      (def dx (- (in bi :x) (in bj :x)))
-      (def dy (- (in bi :y) (in bj :y)))
-      (def dz (- (in bi :z) (in bj :z)))
+      (def dx (- bix (in bj X)))
+      (def dy (- biy (in bj Y)))
+      (def dz (- biz (in bj Z)))
       (def dist (math/sqrt (+ (* dx dx) (* dy dy) (* dz dz))))
-      (-= e (/ (* (in bi :mass) (in bj :mass)) dist))))
+      (-= e (/ (* bimass (in bj MASS)) dist))))
   e)
 
 (defn offset-momentum [bodies nbody]
@@ -96,14 +115,14 @@
   (var py 0)
   (var pz 0)
   (each b bodies
-    (def mass (in b :mass))
-    (+= px (* (in b :vx) mass))
-    (+= py (* (in b :vy) mass))
-    (+= pz (* (in b :vz) mass)))
+    (def bimass (in b MASS))
+    (+= px (* (in b VX) bimass))
+    (+= py (* (in b VY) bimass))
+    (+= pz (* (in b VZ) bimass)))
   (def sun (in bodies 0))
-  (set (sun :vx) (/ (- px) solar-mass))
-  (set (sun :vy) (/ (- py) solar-mass))
-  (set (sun :vz) (/ (- pz) solar-mass)))
+  (set (sun VX) (/ (- px) solar-mass))
+  (set (sun VY) (/ (- py) solar-mass))
+  (set (sun VZ) (/ (- pz) solar-mass)))
 
 (def N (scan-number (get (dyn :args) 1)))
 (def nbody (length bodies))
