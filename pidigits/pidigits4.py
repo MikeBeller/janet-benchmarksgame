@@ -48,6 +48,8 @@ def main():
     i=0
     k=0
     while i<n:
+        if i >= 9999:
+            print(i, "\nNUM", num, "\nACC", acc, "\nDEN", den)
         k+=1
         next_Term(k)
 
