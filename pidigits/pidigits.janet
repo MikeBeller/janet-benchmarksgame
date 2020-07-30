@@ -5,7 +5,12 @@
 (var num (big/int 1))
 
 (defn extract-digit [n]
-  (/ (+ acc (* num n)) den))
+  (var tmp1 (+ acc (* num n)))
+  (var d 0)
+  (while (>= tmp1 den)
+    (++ d)
+    (-= tmp1 den))
+  d)
 
 (defn eliminate-digit [d]
   (-= acc (* den d))
