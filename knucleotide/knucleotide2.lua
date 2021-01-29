@@ -38,13 +38,14 @@ local function frequency(seq, k)
   io.write("\n")
 end
 
-local function readseq()
+local function readseq(fname)
+  local file = io.open(fname)
   local sub = string.sub
-  for line in io.lines() do
+  for line in file:lines() do
     if sub(line, 1, 1) == ">" and sub(line, 2, 6) == "THREE" then break end
   end
   local lines, ln = {}, 0
-  for line in io.lines() do
+  for line in file:lines() do
     local c = sub(line, 1, 1)
     if c == ">" then
       break
@@ -56,7 +57,7 @@ local function readseq()
   return string.upper(table.concat(lines, "", 1, ln))
 end
 
-local seq = readseq()
+local seq = readseq(arg[1])
 frequency(seq, 1)
 frequency(seq, 2)
 count(seq, "GGT")
