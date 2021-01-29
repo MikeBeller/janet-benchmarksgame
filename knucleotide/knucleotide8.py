@@ -8,6 +8,7 @@
 # modified by Justin Peel 
 
 from sys import stdin
+import sys
 from collections import defaultdict
 from multiprocessing import Pool
 
@@ -68,7 +69,7 @@ class FakePool:
 
 def main():
     global sequence
-    sequence = prepare()
+    sequence = prepare(open(sys.argv[1]))
     #p=Pool()
     p = FakePool()
 
