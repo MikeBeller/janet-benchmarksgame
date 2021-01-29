@@ -68,6 +68,7 @@
     (if (= (length args) 2)
       (filter |(string/find (in args 1) (in $ :name)) all-benches)
       all-benches))
+  (print "BENCHXXX: name," (string/join (seq [l :in langs] (l :name)) ","))
   (each bench benches
     (def times
       (seq [{:name langname :exec langexec} :in langs ]

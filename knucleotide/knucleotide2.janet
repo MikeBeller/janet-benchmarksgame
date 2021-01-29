@@ -1,4 +1,6 @@
 
+(def slice keyword/slice)
+
 (defn read-seq [fname]
   (with [infile (file/open fname)]
     (loop [line :iterate (file/read infile :line)
@@ -31,7 +33,7 @@
   (def cs @{})
   (def ns (- (+ (length data) 1) len))
   (for i 0 ns
-    (def k (keyword/slice data i (+ i len)))
+    (def k (slice data i (+ i len)))
     (put cs k (+ (get cs k 0) 1)))
   cs)
 
@@ -41,11 +43,11 @@
   (print-by-freq
     (frequencies
       (seq [i :range [0 (dec (length data))]]
-        (keyword/slice data i (+ i 2)))))
+        (slice data i (+ i 2)))))
   (print)
   (loop [sq :in knseqs]
     (def cs (counts data (length sq)))
-    (printf "%7d %j" (get cs (keyword/slice sq) 0) sq)))
+    (printf "%7d %j" (get cs (slice sq) 0) sq)))
 
 (knucleotide data)
 
