@@ -7,6 +7,8 @@ Goal is to explore Janet language performance.
 
 TL;DR [summary graph is here:](summary.ipynb)
 
+## Explanation
+
 Representative versions from other languages (typically Python and Lua),
 taken from the benchmarksgame site, are included in the various benchmark
 directories in order to give reference points for performance.  
@@ -26,6 +28,21 @@ Note -- per suggestion from @bakpakin, **all timings are given for a Janet
 binary compiled with LTO**.  This reduces run time by as much as 30% in some
 cases over a Janet compiled without LTO.  To compile with LTO just add
 `export CFLAGS='-fPIC -O2 -flto'` before your compile.
+
+## Running the benchmarks yourself
+
+Make sure you have a LTO-compiled Janet installed if you want best
+performance. (see above).
+
+You also need a lua and a python in your path installed as "lua" and "python".
+
+```
+jpm deps 
+janet runbench.janet >bench.log  # this takes like 15 minutes! tail -f to monitor
+```
+
+To recreate the graphs you need jupyter notebook installed, with
+numpy, pandas, matplotlib.  Just rerun all the sells in summary.ipynb.
 
 ## Ideas for Improving Janet Performance
 
