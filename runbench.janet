@@ -55,16 +55,13 @@
                :python "pidigits4.py"
                :lua nil}
               {:name "regexredux"
-               :dir "pidigits"
-               :arg "10000"
-               :janet "pidigits.janet"
-               :python "pidigits4.py"
+               :dir "regex-redux"
+               :arg "regex-redux/input5000000.txt"
+               :janet "regexredux2.janet"
+               :python "regexredux1.py"
                :lua nil}
 
-
               ])
-
-(def NaN (/ 0 0))    
 
 (defn main [& args]
   (def benches
@@ -79,6 +76,6 @@
             (def bfile (path/join (in bench :dir) bfilename))
             (def r (time-cmd [langexec bfile (string (in bench :arg))]))
             (sum r))
-          NaN)))
+          math/nan)))
     (print "BENCHXXX: " (in bench :name) "," (string/join (map string times) ","))))
 

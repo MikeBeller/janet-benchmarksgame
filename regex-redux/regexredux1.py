@@ -7,7 +7,8 @@
 # modified by Justin Peel
 # converted from regex-dna program
 
-from sys import stdin
+#from sys import stdin
+import sys
 from re import sub, findall
 from multiprocessing import Pool
 
@@ -19,7 +20,8 @@ def var_find(f):
     return len(findall(f, seq))
 
 def main():
-    seq = stdin.read()
+    infile = open(sys.argv[1])
+    seq = infile.read()
     ilen = len(seq)
 
     seq = sub('>.*\n|\n', '', seq)

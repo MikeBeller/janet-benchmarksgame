@@ -1,5 +1,11 @@
 # Regex Redux Benchmark
 
+Generate the input with
+
+```
+python fasta2.py 5000000 >input5000000.txt
+```
+
 The rules say you have to use the exact regex given in the benchmark
 description for your performance comparison, but I think it's much more
 interesting to see how Janet PEGs stack up against regexes in languages like
