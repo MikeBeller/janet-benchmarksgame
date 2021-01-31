@@ -44,9 +44,10 @@
       (buffer/push-byte outbuf (in trans (in buf (- ln i 1)))))
     # If you replace the above loop with this loop you can see that 80% of execution
     # time is in the translation part (the handling of each byte).
-    #(loop [i :range [0 ln 60]]
+    #(loop [i :range [0 ln 60]]                      # 15s
     #  (def nd (min (+ i 60) ln))
     #  (buffer/blit outbuf buf i i nd))
+    #(buffer/push outbuf (string/ascii-upper buf))   # 10s
 
     # print it out
     (if (not= 10 (in outbuf (dec (length outbuf))))
