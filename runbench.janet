@@ -60,6 +60,12 @@
                :janet "regexredux2.janet"
                :python "regexredux1.py"
                :lua nil}
+              {:name "reverse-complement"
+               :dir "reverse-complement"
+               :arg "reverse-complement/input100000000.txt"
+               :janet "revcomp2.janet"
+               :python "revcomp.py"
+               :lua "revcomp2.lua"}
 
               ])
 
