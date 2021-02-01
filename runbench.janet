@@ -48,6 +48,12 @@
                :janet "nbody2.janet"
                :python "nbody.py"
                :lua "nbody2.lua"}
+              {:name "reverse-complement"
+               :dir "reverse-complement"
+               :arg "reverse-complement/input100000000.txt"
+               :janet "revcomp2.janet"
+               :python "revcomp.py"
+               :lua "revcomp2.lua"}
               {:name "pidigits"
                :dir "pidigits"
                :arg "10000"
@@ -60,21 +66,16 @@
                :janet "regexredux2.janet"
                :python "regexredux1.py"
                :lua nil}
-              {:name "reverse-complement"
-               :dir "reverse-complement"
-               :arg "reverse-complement/input100000000.txt"
-               :janet "revcomp2.janet"
-               :python "revcomp.py"
-               :lua "revcomp2.lua"}
 
               ])
 
+# Run benchmarks and print table of output to stderr
 (defn main [& args]
   (def benches
     (if (= (length args) 2)
       (filter |(string/find (in args 1) (in $ :name)) all-benches)
       all-benches))
-  (print "BENCHXXX: name," (string/join (seq [l :in langs] (l :name)) ","))
+  (eprint "name," (string/join (seq [l :in langs] (l :name)) ","))
   (each bench benches
     (def times
       (seq [{:name langname :exec langexec} :in langs ]
@@ -84,5 +85,5 @@
             (def r (time-cmd [langexec bfile (string (in bench :arg))]))
             (sum r))
           math/nan)))
-    (print "BENCHXXX: " (in bench :name) "," (string/join (map string times) ","))))
+    (eprint (in bench :name) "," (string/join (map string times) ","))))
 

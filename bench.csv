@@ -1,0 +1,8 @@
+name,janet,python,lua
+fannkuch,5.04,4.83,1.77
+binarytrees,71.63,110.94,110.01
+knucleotide,137.59,164.44,74.36
+nbody,17.53,37.77,10.48
+reverse-complement,35.78,7.37,34.91
+pidigits,5.98,3.92,nan
+regexredux,15.86,13.51,nan
