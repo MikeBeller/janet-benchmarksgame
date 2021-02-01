@@ -41,6 +41,7 @@
   (def outbuf (buffer/new BUFSIZE))
 
   (loop [[header sequence] :in (gen-sequences infile)]
+    #(def sttime (os/clock))
     (file/write stdout header)
 
     # translate into outbuf, reversed, including nls
@@ -63,5 +64,6 @@
     (if (not= 10 (in outbuf (dec (length outbuf))))
       (buffer/push-byte outbuf 10))
     (file/write stdout outbuf))
-  )
+    #(print "TIME: " (- (os/clock) sttime))
+    ))
 

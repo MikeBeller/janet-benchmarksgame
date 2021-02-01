@@ -30,12 +30,22 @@ wcode = wcode..[=["\n")
   end
 end
 ]=]
+--print(wcode)
 local writerev = load(wcode)()
 
 local t, n = {}, 1
 for line in io.lines() do
   local c = sub(line, 1, 1)
-  if c == ">" then writerev(t, n); io.write(line, "\n"); n = 1
+  if c == ">" then
+      writerev(t, n);
+      io.write(line, "\n");
+      n = 1;
   elseif c ~= ";" then t[n] = line; n = n + 1 end
 end
+--[[local n = 0
+for k,v in pairs(iubc) do
+    n = n + 1
+    print(k,v)
+end
+print(n) --]]
 writerev(t, n)
