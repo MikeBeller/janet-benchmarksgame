@@ -6,47 +6,115 @@
   r)
 
 (def BUFSIZE (* 1024 1024))
+(def SLICE keyword/slice)
+
+(defn gen-sequences [infile]
+  (coro
+    (var linebuf (buffer/new 128))
+    (var buf (buffer/new BUFSIZE))
+    (var header nil)
+    (forever
+      (buffer/clear linebuf)
+      (file/read infile :line linebuf)
+      (cond
+        (zero? (length linebuf))
+          (do
+            (yield [header buf])
+            (break))
+        (= (in linebuf 0) (chr ">"))
+          (do
+            (when header
+              (yield [header buf]))
+              (set buf (buffer/new BUFSIZE))
+              (set header linebuf)
+              (set linebuf (buffer/new 128)))
+        (do
+          (buffer/popn linebuf 1)
+          (buffer/push buf linebuf))))))
+
+(defn make-trans-table [trans chrs nd]
+  (def myslice SLICE)
+  (def tb @{})
+  (def nc (length chrs))
+  (def cnt (buffer/new-filled nd 0))
+  (def kbuf (buffer/new nd))
+  (def vbuf (buffer/new nd))
+  (loop [i :range [0 (math/pow nc nd)]]
+    (var j 0)
+    (while (< j nd)
+      (def n (inc (in cnt j)))
+      (if (< n nc)
+        (do
+          (put cnt j n)
+          (break))
+        (do
+          (put cnt j 0)
+          (++ j))))
+    (buffer/clear kbuf)
+    (buffer/clear vbuf)
+    (loop [j :range [0 nd]]
+      (def ch (in chrs (in cnt j)))
+      (buffer/push-byte kbuf ch)
+      (buffer/push-byte vbuf (in trans ch)))
+    (reverse! vbuf)
+    (put tb (myslice kbuf) (myslice vbuf)))
+  tb)
+
+(defn trans-seg [trans sq]
+  (def ln (length sq))
+  (def buf (buffer/new ln))
+  (loop [i :range [0 ln]]
+    (buffer/push-byte buf (in trans (in sq (- ln i 1)))))
+  buf)
 
 (defn main [& args]
+  (def myslice SLICE)
+  (def filepath (in args 1))
+  (def window (scan-number (get args 2 "2")))
   (def trans
     (maketrans
       "ACGTUMRWSYKVHDBNacgtumrwsykvhdbn"
       "TGCAAKYWSRMBDHVNTGCAAKYWSRMBDHVN"))
+  #(def trseq
+  #  (make-trans-table trans "ACGT" window))
+  (def trseq @{})
 
-  (def infile (file/open (in args 1)))
-  (def outbufs @[])
-  (def linebuf (buffer/new 128))
-  (def buf (buffer/new BUFSIZE))
+  (def infile (file/open filepath))
   (def outbuf (buffer/new BUFSIZE))
-  (file/read infile :line linebuf)
-  (while (not= 0 (length linebuf))
-    (file/write stdout linebuf)
-    (buffer/clear linebuf)
-    (buffer/clear buf)
 
-    # accumulate sequence into buf
-    (forever
-             (file/read infile :line linebuf)
-             (when (or (zero? (length linebuf)) (= (in linebuf 0) (chr ">")))
-               (break))
-
-             (buffer/popn linebuf 1)  # the newline
-             (buffer/push buf linebuf)
-             (buffer/clear linebuf))
+  (loop [[header sequence] :in (gen-sequences infile)]
+    (def sttime (os/clock))
+    (file/write stdout header)
 
     # translate into outbuf, reversed, including nls
+    (def sequence (string/ascii-upper sequence))
     (buffer/clear outbuf)
-    (def buf (string/ascii-upper buf))
-    (def ln (length buf))
-    #(var nxr 60)
-    (var t 0)
-    (var acgt 0)
-    (loop [i :range [0 ln 4]]
-      (def s (string/slice buf i (+ i 4)))
-      (if (string/check-set "ACGT" s)
-        (++ acgt))
-      (++ t))
+    (def ln (length sequence))
+    (var nxr 60)
+    (assert (zero? (% 60 window)) "invalid window")
+    (loop [i :range [0 ln window]]
+      (when (= i nxr)
+        (buffer/push-byte outbuf 10)
+        (+= nxr 60))
+      (if (<= i (- ln window))
+        (do
+          (def sl (myslice sequence (- ln i window) (- ln i)))
+          (def tr (in trseq sl))
+          (if tr
+            (buffer/push outbuf tr)
+            (do
+              (def trs (trans-seg trans sl))
+              (put trseq sl trs)
+              (buffer/push outbuf trs))))
+        (do
+          (buffer/push outbuf (trans-seg trans (myslice sequence 0 (- ln i))))
+          (break))))
 
     # print it out
-    (print t " " acgt)
-  ))
+    (if (not= 10 (in outbuf (dec (length outbuf))))
+      (buffer/push-byte outbuf 10))
+    (file/write stdout outbuf)
+    #(print "TIME: " (- (os/clock) sttime))
+    )
+  )
+
