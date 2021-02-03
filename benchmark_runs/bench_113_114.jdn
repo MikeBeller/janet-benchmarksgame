@@ -1,0 +1,40 @@
+{
+ :langs
+ [
+  {:name :janet113 :exec "janet1.13"}
+  {:name :janet114 :exec "janet1.14"}
+  ]
+
+ :benches [
+           {:name "fannkuch"
+            :dir "fannkuch"
+            :arg 10
+            :janet114 "fannkuch4-bakpakin.janet"
+            :janet113 "fannkuch4-bakpakin.janet"}
+           {:name "binarytrees"
+            :dir "binarytrees"
+            :arg 21
+            :janet114 "binarytrees1.janet"
+            :janet113 "binarytrees1.janet"}
+           {:name "knucleotide"
+            :dir "knucleotide"
+            :arg "knucleotide/input25000000.txt"
+            :janet114 "knucleotide2.janet"
+            :janet113 "knucleotide2.janet"}
+           {:name "nbody"
+            :dir "nbody"
+            :arg "5000000"
+            :janet114 "nbody2.janet"
+            :janet113 "nbody2.janet"}
+           {:name "reverse-complement"
+            :dir "reverse-complement"
+            :arg "reverse-complement/input25000000.txt"
+            :janet114 "revcomp2.janet"
+            :janet113 "revcomp2_113.janet"}
+           {:name "regexredux"
+            :dir "regex-redux"
+            :arg "regex-redux/input5000000.txt"
+            :janet114 "regexredux2.janet"
+            :janet113 "regexredux2.janet"}
+           ]
+ }

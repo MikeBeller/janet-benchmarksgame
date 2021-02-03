@@ -34,15 +34,22 @@ cases over a Janet compiled without LTO.  To compile with LTO just add
 Make sure you have a LTO-compiled Janet installed if you want best
 performance. (see above).
 
-You also need a lua and a python in your path installed as "lua" and "python".
+Create a benchmark configuration in benchmark_runs/benchname.jdn, or use
+one of the existing ones.  E.g. bench_pylua.jdn as follows:
+
+(You also need a lua and a python in your path installed as "lua" and "python"
+for this benchmark.)
 
 ```
 jpm deps 
-janet runbench.janet >bench.log  # this takes like 15 minutes! tail -f to monitor
+janet runbench.janet benchmark_runs/bench_pylua.jdn >t1 2>benchmark_runs/bench_pylua.csv
 ```
 
+You can monitor the timings by tailing the .csv file, and all the general
+output (to look for uncaught errors for example) by tailing t1.
+
 To recreate the graphs you need jupyter notebook installed, with
-numpy, pandas, matplotlib.  Just rerun all the sells in summary.ipynb.
+numpy, pandas, matplotlib.  Just rerun all the cells in summary.ipynb.
 
 ## Ideas for Improving Janet Performance
 

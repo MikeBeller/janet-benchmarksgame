@@ -1,4 +1,5 @@
 (import spork/path)
+(import jdn)
 
 (defn time-cmd [cmd]
   (def c (tuple "/usr/bin/time" "--format" "%U %S %x" ;cmd))
@@ -16,64 +17,18 @@
       (print "error running cmd: " tms)
       (os/exit 1))))
 
-#(assert (= 2 (length (time-cmd ["ls" "-l"]))))
-
-(def langs
-  [{:name :janet :exec "janet"}
-  {:name :python :exec "python"}
-  {:name :lua :exec "lua"}])
-
-(def all-benches [
-              {:name "fannkuch"
-               :dir "fannkuch"
-               :arg 10
-               :janet "fannkuch4-bakpakin.janet"
-               :python "fannkuch.py"
-               :lua "fannkuch.lua"}
-              {:name "binarytrees"
-               :dir "binarytrees"
-               :arg 21
-               :janet "binarytrees1.janet"
-               :python "binarytrees2.py"
-               :lua "binarytrees2.lua"}
-              {:name "knucleotide"
-               :dir "knucleotide"
-               :arg "knucleotide/input25000000.txt"
-               :janet "knucleotide2.janet"
-               :python "knucleotide8.py"
-               :lua "knucleotide2.lua"}
-              {:name "nbody"
-               :dir "nbody"
-               :arg "5000000"
-               :janet "nbody2.janet"
-               :python "nbody.py"
-               :lua "nbody2.lua"}
-              {:name "reverse-complement"
-               :dir "reverse-complement"
-               :arg "reverse-complement/input100000000.txt"
-               :janet "revcomp2.janet"
-               :python "revcomp.py"
-               :lua "revcomp2.lua"}
-              {:name "pidigits"
-               :dir "pidigits"
-               :arg "10000"
-               :janet "pidigits.janet"
-               :python "pidigits4.py"
-               :lua nil}
-              {:name "regexredux"
-               :dir "regex-redux"
-               :arg "regex-redux/input5000000.txt"
-               :janet "regexredux2.janet"
-               :python "regexredux1.py"
-               :lua nil}
-
-              ])
+(defn usage []
+  (eprint "Usage: " (in (dyn :args) 0) " <config.jdn> <pattern>")
+  (os/exit 1))
 
 # Run benchmarks and print table of output to stderr
 (defn main [& args]
+  (if (< (length args) 2) (usage))
+  (def [_cmd configfile pattern] args)
+  (def {:langs langs :benches all-benches} (jdn/decode (slurp configfile)))
   (def benches
-    (if (= (length args) 2)
-      (filter |(string/find (in args 1) (in $ :name)) all-benches)
+    (if pattern
+      (filter |(string/find pattern (in $ :name)) all-benches)
       all-benches))
   (eprint "name," (string/join (seq [l :in langs] (l :name)) ","))
   (each bench benches
