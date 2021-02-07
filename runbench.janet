@@ -1,5 +1,4 @@
 (import spork/path)
-(import jdn)
 
 (defn time-cmd [cmd]
   (def c (tuple "/usr/bin/time" "--format" "%U %S %x" ;cmd))
@@ -25,7 +24,7 @@
 (defn main [& args]
   (if (< (length args) 2) (usage))
   (def [_cmd configfile pattern] args)
-  (def {:langs langs :benches all-benches} (jdn/decode (slurp configfile)))
+  (def {:langs langs :benches all-benches} (parse (slurp configfile)))
   (def benches
     (if pattern
       (filter |(string/find pattern (in $ :name)) all-benches)

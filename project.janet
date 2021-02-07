@@ -4,7 +4,6 @@
   :dependencies [
                  "https://github.com/janet-lang/spork.git"
                  "https://github.com/andrewchambers/janet-big.git"
-                 "https://github.com/andrewchambers/janet-jdn.git"
                  ]
   )
 
