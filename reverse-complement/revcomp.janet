@@ -65,5 +65,5 @@
       (buffer/push-byte outbuf 10))
     (file/write stdout outbuf))
     #(print "TIME: " (- (os/clock) sttime))
-    ))
+    )
 
