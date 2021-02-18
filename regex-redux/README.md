@@ -1,4 +1,4 @@
-# Regex Redux Benchmark
+# [Regex Redux Benchmark](https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/regexredux.html#regexredux)
 
 Generate the input with
 
@@ -46,4 +46,3 @@ regexredux2.janet **15.3s**
 regexredux1.py   **11.3s**
 
 So it doubled Janet's speed on the benchmark.
-

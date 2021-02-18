@@ -1,4 +1,4 @@
-# Fannkuch-redux benchmark
+# [Fannkuch-redux benchmark](https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/fannkuchredux.html#fannkuchredux)
 
 ## Naive, single-threaded version
 
@@ -65,4 +65,3 @@ New version based on fannkuch4 (with rev table and all optimizations):
 fannkuch4-parallel.janet: **1.4s** real or **5.4s user**
 
 Equivalent to python.
-

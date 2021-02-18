@@ -1,4 +1,4 @@
-# K-Nucleotide Benchmark
+# [K-Nucleotide Benchmark](https://benchmarksgame-team.pages.debian.net/benchmarksgame/description/knucleotide.html#knucleotide)
 
 Initially a single threaded version, for 25,000,000 size.
 
@@ -45,5 +45,4 @@ Originally, when I ran without gcsetinterval
 Points to some need to auto-adjust gc interval??
 As of [this commit](https://github.com/janet-lang/janet/commit/95c633914f0381c9800fedbcc0c47bf70d53f62a)
 on 6/27/20 auto-adjust of gc interval is now in the master branch.
-
 
