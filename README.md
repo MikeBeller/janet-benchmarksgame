@@ -5,7 +5,10 @@ benchmarks for the [Janet language](https://janet-lang.org/).
 
 Goal is to explore Janet language performance.
 
-TL;DR [summary graph is here:](summary.ipynb)
+TL;DR [summary graph is viewable in this Jupyter notebook:](benchmark_runs/summary.ipynb)
+
+Sometimes Github's Jupyter Notebook viewer is unreliable so
+[here is another way to view the notebook:](https://nbviewer.jupyter.org/github/MikeBeller/janet-benchmarksgame/blob/master/benchmark_runs/summary.ipynb)
 
 ## Explanation
 
