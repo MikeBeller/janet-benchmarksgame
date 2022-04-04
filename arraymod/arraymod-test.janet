@@ -1,4 +1,4 @@
-(import ./build/arraymod as arraymod)
+(import ./build/arraymod :as arraymod)
 
 (def a @[1 2 3 4 5])
 (arraymod/flip a 3)
